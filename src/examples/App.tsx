@@ -1,11 +1,10 @@
 import React from "react";
-import Button from "../lib/index";
+import { Button } from "../lib";
 
 const App: React.FC = () => {
   return (
     <React.Fragment>
-      <h1>Welcome Siemaa Hej</h1>
-      <Button text={"Siema"} />
+      <Button bg="#ff0000" color="red" bgHover="brown" colorHover="white" />
     </React.Fragment>
   );
 };
