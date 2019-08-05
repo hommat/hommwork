@@ -4,7 +4,12 @@ import { Button } from "../lib";
 const App: React.FC = () => {
   return (
     <React.Fragment>
-      <Button bg="#ff0000" color="red" bgHover="brown" colorHover="white" />
+      <Button
+        bg={{ color: "maroon", lightness: 3 }}
+        color="red"
+        bgHover="maroon"
+        colorHover="blue"
+      />
     </React.Fragment>
   );
 };

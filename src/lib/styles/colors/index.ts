@@ -1,8 +1,37 @@
 import { darken, lighten } from "polished";
 
-export type Colors = { [colorName: string]: string };
+const colorPallete = <const>[
+  "aqua",
+  "blue",
+  "navy",
+  "teal",
+  "green",
+  "olive",
+  "lime",
+  "yellow",
+  "orange",
+  "red",
+  "fuchsia",
+  "purple",
+  "maroon",
+  "white",
+  "silver",
+  "grey",
+  "black"
+];
 
-const colors: Colors = {
+export const lightnessPercent: number[] = [0.05, 0.1, 0.15];
+const lightnessOptions = <const>[-3, -2, -1, 1, 2, 3];
+export type Lightness = typeof lightnessOptions[number];
+
+export type PalleteColor = typeof colorPallete[number];
+export type PalleteColorWithOptions = {
+  color: PalleteColor;
+  lightness: Lightness;
+};
+export type Pallete = { [key in typeof colorPallete[number]]: string };
+
+export const colors: Pallete = {
   aqua: "#7fdbff",
   blue: "#0074d9",
   navy: "#001f3f",
@@ -22,61 +51,21 @@ const colors: Colors = {
   black: "#111111"
 };
 
-export const lightnessPercent: number[] = [0.05, 0.1, 0.15];
-
-export const combineColorsWithShades = (colors: Colors): Colors => {
-  const allColorsArray: Colors[] = [colors, ...createShadesOfColors(colors)];
-  const combinedObject: Colors = allColorsArray.reduce((obj, shade): Colors => {
-    return { ...obj, ...shade };
-  }, {});
-
-  return combinedObject;
-};
-
-export const createShadesOfColors = (colors: Colors): Colors[] => {
-  const integersToLightnessLength: number[] = lightnessPercent.map(
-    (x, i) => i + 1
-  );
-  const lightnessWithNegative: number[] = [
-    ...integersToLightnessLength,
-    ...integersToLightnessLength.map(x => -x)
-  ];
-  const shadesOfColors: Colors[] = lightnessWithNegative.map(lightness =>
-    changeColorsLightness(colors, lightness)
-  );
-
-  return shadesOfColors;
-};
-
-export const changeColorsLightness = (colors: Colors, ligthness: number) => {
+export const changeColorLightness = (
+  ligthness: number,
+  color: PalleteColor
+): string => {
   if (Math.abs(ligthness) > lightnessPercent.length) {
     throw Error("Lightness level is out of range");
   }
+
   if (ligthness % 1 !== 0) {
     throw Error("Ligtness level can not be decimal number");
   }
 
-  const newColors: Colors = {};
-  const prefix: string =
-    (ligthness > 0 ? "-dark-" : "-light-") + Math.abs(ligthness);
+  if (ligthness > 0) {
+    return darken(lightnessPercent[ligthness - 1], colors[color]);
+  }
 
-  Object.keys(colors).forEach(colorName => {
-    let newColorValue: string;
-    if (ligthness > 0) {
-      newColorValue = darken(
-        lightnessPercent[ligthness - 1],
-        colors[colorName]
-      );
-    } else {
-      newColorValue = lighten(
-        lightnessPercent[-ligthness - 1],
-        colors[colorName]
-      );
-    }
-    newColors[colorName + prefix] = newColorValue;
-  });
-
-  return newColors;
+  return lighten(lightnessPercent[-ligthness - 1], colors[color]);
 };
-
-export default combineColorsWithShades(colors);
